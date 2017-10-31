@@ -147,7 +147,10 @@ public class Solution1To10 {
             }
         }
     }
-
+    /*
+    54. Spiral Matrix
+    Given a matrix of m x n elements (m rows, n columns), return all elements of the matrix in spiral order.
+     */
     public List<Integer> spiralOrder(int[][] matrix) {
         int len = matrix.length;
         ArrayList<Integer> spiraledData = new ArrayList<Integer>();
@@ -197,15 +200,98 @@ public class Solution1To10 {
         }
         return spiraledData;
     }
+    /*
+    55. Jump Game
+     Given an array of non-negative integers, you are initially positioned at the first index of the array.
+
+    Each element in the array represents your maximum jump length at that position.
+
+    Determine if you are able to reach the last index.
+
+    For example:
+    A = [2,3,1,1,4], return true.
+
+    A = [3,2,1,0,4], return false
+    */
+
+    public boolean canJump(int[] nums) {
+        int len = nums.length;
+        if (len == 0) {
+            return true;
+        }
+        int indexAccessStart = 0;
+        int indexAccessEnd = 0;
+        int firstIdxCantAccess = 1;
+        while (indexAccessStart <= indexAccessEnd) {
+            if (nums[indexAccessStart] + indexAccessStart + 1 > firstIdxCantAccess) {
+                firstIdxCantAccess = nums[indexAccessStart] + indexAccessStart + 1;
+            }
+            indexAccessStart ++;
+            indexAccessEnd = firstIdxCantAccess - 1;
+            if (firstIdxCantAccess > len - 1) {
+                break;
+            }
+        }
+        if (firstIdxCantAccess > len - 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public List<Interval> merge (List < Interval > intervals){
+        Collections.sort(intervals, new IntervalComparator());
+        ArrayList<Interval> intervalsMerged = new ArrayList<Interval>();
+        for (Interval interval : intervals) {
+            if (intervalsMerged.isEmpty()) {
+                intervalsMerged.add(interval);
+            }
+            int size = intervalsMerged.size();
+            Interval lastInterval = intervalsMerged.get(size-1);
+            if (lastInterval.end >= interval.start && lastInterval.end < interval.end) {
+                lastInterval.end = interval.end;
+            } else if (lastInterval.end < interval.start) {
+                intervalsMerged.add(interval);
+            }
+        }
+        return intervalsMerged;
+    }
 
     public static void main(String[] args) {
-        int[][] nums = {{1, 2, 3, 4},{5, 6, 7, 8}};
-        List<Integer> l = new Solution1To10().spiralOrder(nums);
-        System.out.println(l);
+        ArrayList<Interval> intervals = new ArrayList<Interval>();
+        intervals.add(new Interval(8, 10));
+        intervals.add(new Interval(15, 18));
+        intervals.add(new Interval(1, 3));
+        intervals.add(new Interval(2, 6));
+        List<Interval> intervalsMerged = new Solution1To10().merge(intervals);
+        for (Interval interval : intervalsMerged) {
+            System.out.println(interval.start + ", " + interval.end);
+        }
     }
 }
 
+class Interval {
+    int start;
+    int end;
 
+    Interval() {
+        start = 0;
+        end = 0;
+    }
+
+    Interval(int s, int e) {
+        start = s;
+        end = e;
+    }
+}
+
+class IntervalComparator implements Comparator {
+    public int compare(Object o1, Object o2) {
+        Interval i1 = (Interval)o1;
+        Interval i2 = (Interval)o2;
+        return i1.start - i2.start;
+    }
+}
 
 
 
