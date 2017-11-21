@@ -724,10 +724,126 @@ public class Solution1To10 {
         return product;
     }
 
+    /*
+    Given an array nums containing n + 1 integers where each integer is between 1 and n (inclusive), prove that at
+    least one duplicate number must exist. Assume that there is only one duplicate number, find the duplicate one.
+    Note:
+    You must not modify the array (assume the array is read only).
+    You must use only constant, O(1) extra space.
+    Your runtime complexity should be less than O(n2).
+    There is only one duplicate number in the array, but it could be repeated more than once.
+     */
+    public int findDuplicate(int[] nums) {
+        int low = 1;
+        int hi = nums.length - 1;
+        while (low <= hi) {
+            int mid = (low + hi) / 2;
+            int numSmaller = 0;
+            int numBigger = 0;
+            for (int i = 0; i < nums.length; i++) {
+                if (nums[i] < mid && nums[i] >= low)
+                    numSmaller += 1;
+                if (nums[i] > mid && nums[i] <= hi)
+                    numBigger += 1;
+            }
+            if (numSmaller + numBigger <= hi - low)
+                return mid;
+            if (numSmaller < numBigger)
+                low = mid + 1;
+            else
+                hi = mid - 1;
+        }
+        return -1;
+    }
+
+    /*
+    According to the Wikipedia's article: "The Game of Life, also known simply as Life, is a cellular automaton devised
+    by the British mathematician John Horton Conway in 1970."
+
+    Given a board with m by n cells, each cell has an initial state live (1) or dead (0). Each cell interacts with its
+    eight neighbors (horizontal, vertical, diagonal) using the following four rules (taken from the above Wikipedia
+    article):
+
+    Any live cell with fewer than two live neighbors dies, as if caused by under-population.
+    Any live cell with two or three live neighbors lives on to the next generation.
+    Any live cell with more than three live neighbors dies, as if by over-population..
+    Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
+
+    Write a function to compute the next state (after one update) of the board given its current state.
+
+    Follow up:
+
+    Could you solve it in-place? Remember that the board needs to be updated at the same time: You cannot update some
+    cells first and then use their updated values to update other cells.
+    In this question, we represent the board using a 2D array. In principle, the board is infinite, which would cause
+    problems when the active area encroaches the border of the array. How would you address these problems?
+     */
+    public void gameOfLife(int[][] board) {
+        int num_row = board.length;
+        if (num_row == 0) return;
+        int num_col = board[0].length;
+        ArrayList<Index> idxes = new ArrayList<Index>();
+        for(int i = 0; i < 9; i++)
+            idxes.add(new Index(-1, -1));
+        for (int i = 0; i < num_row; i++) {
+            for (int j = 0; j < num_col; j++) {
+                for (int i1 = 0; i1 < 3; i1 ++)
+                    for (int j1 = 0; j1 < 3; j1 ++) {
+                        idxes.get(i1 * 3 + j1).col = j - 1 + j1;
+                        idxes.get(i1 * 3 + j1).row = i - 1 + i1;
+                    }
+                int numsOne = 0;
+                for (int k = 0; k < 9; k++) {
+                    Index nearIdx = idxes.get(k);
+                    if (nearIdx.isOK(num_row - 1, num_col - 1) && k != 4) {
+                        numsOne += board[nearIdx.row][ nearIdx.col] % 2;
+                    }
+                }
+                int dataRow = idxes.get(4).row;
+                int dataCol = idxes.get(4).col;
+                int data = board[dataRow][dataCol];
+                if (numsOne < 2 || numsOne > 3) {
+                    board[dataRow][dataCol] = board[dataRow][dataCol];
+                } else if (numsOne == 2) {
+                    if (data == 0)
+                        board[dataRow][dataCol] = 0;
+                    else
+                        board[dataRow][dataCol] = 3;
+                } else if (numsOne == 3) {
+                    if (data == 0)
+                        board[dataRow][dataCol] = 2;
+                    else
+                        board[dataRow][dataCol] = 3;
+                }
+            }
+        }
+        for (int i = 0; i < num_row; i++) {
+            for (int j = 0; j < num_col; j++) {
+                board[i][j] = board[i][j] / 2;
+            }
+        }
+    }
+
+    class Index {
+        int row;
+        int col;
+
+        Index(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+
+        boolean isOK(int maxRow, int maxCol) {
+            if (this.row < 0 || this.row > maxRow || this.col < 0 || this.col > maxCol)
+                return false;
+            return true;
+        }
+    }
+
     public static void main(String[] args) {
 
-       int[] maxProduct = new Solution1To10().productExceptSelfV2(new int[]{1, 2, 3, 7, 2});
-       System.out.println(maxProduct);
+       new Solution1To10().gameOfLife(new int[][]{{0, 1, 0, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}, {1, 0, 0, 1}});
+       System.out.println(1);
 
     }
 }
