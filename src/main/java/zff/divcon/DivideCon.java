@@ -1,5 +1,8 @@
 package zff.divcon;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by zhoufeifei on 12/15/17.
  */
@@ -142,13 +145,11 @@ public class DivideCon {
         return maxSum;
     }
 
+
+
+
     public static void main(String[] args) {
-        String testFunc = "majorityElement";
-        if (testFunc == "majorityElement") {
-            int[] nums = new int[]{6,5,5};
-            int majorNum = new DivideCon().majorityElement(nums);
-            System.out.println(majorNum);
-        }
+        String testFunc = "reconstructQueue";
         if (testFunc == "findKthLargest") {
             int[] nums = new int[]{1, 2};
             new DivideCon().findKthLargest(nums, 1);
